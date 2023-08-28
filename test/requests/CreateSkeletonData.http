@@ -1,0 +1,8 @@
+### CREATE SkeletonData
+POST http://localhost:8180/api/v1/skeletonData
+Accept: application/json
+Content-Type: application/json
+
+{
+  "description": "SkeletonData description"
+}

@@ -1,0 +1,8 @@
+### UPDATE SkeletonData by ID
+PUT http://localhost:8180/api/v1/skeletonData/1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "description": "Update description"
+}
