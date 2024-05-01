@@ -9,6 +9,7 @@ import (
 
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/api/v1/ping", controller.Ping).Methods("GET")
 	router.HandleFunc("/api/v1/skeletonData", controller.CreateSkeletonData).Methods("POST")
 	router.HandleFunc("/api/v1/skeletonData/{sid:[0-9]+}", controller.GetSkeletonData).Methods("GET")
 	router.HandleFunc("/api/v1/skeletonData/{sid:[0-9]+}", controller.UpdateSkeletonData).Methods("PUT")

@@ -9,7 +9,16 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
+
+func Ping(writer http.ResponseWriter, request *http.Request) {
+	writer.WriteHeader(http.StatusOK)
+	_, err := writer.Write([]byte("Pong! " + time.Now().Format(time.DateTime)))
+	if err != nil {
+		return
+	}
+}
 
 func CreateSkeletonData(writer http.ResponseWriter, request *http.Request) {
 	var newSkeletonData dto.SkeletonData
