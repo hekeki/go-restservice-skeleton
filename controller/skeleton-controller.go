@@ -1,97 +1,64 @@
 package controller
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"go-restservice-skeleton/dto"
-	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 )
 
-func Ping(writer http.ResponseWriter, request *http.Request) {
-	writer.WriteHeader(http.StatusOK)
-	_, err := writer.Write([]byte("Pong! " + time.Now().Format(time.DateTime)))
-	if err != nil {
+func Ping(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "Pong! " + time.Now().Format(time.DateTime),
+	})
+}
+
+func CreateSkeletonData(c *gin.Context) {
+	var newSkeletonData dto.SkeletonData
+
+	if err := c.ShouldBindJSON(&newSkeletonData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-}
 
-func CreateSkeletonData(writer http.ResponseWriter, request *http.Request) {
-	var newSkeletonData dto.SkeletonData
-	reqBody, errReadAll := io.ReadAll(request.Body)
-	if errReadAll != nil {
-		fmt.Println("error:", errReadAll)
-	}
-
-	errUnmarshal := json.Unmarshal(reqBody, &newSkeletonData)
-	if errUnmarshal != nil {
-		fmt.Println("error:", errUnmarshal)
-	}
-
-	writer.WriteHeader(http.StatusCreated)
 	log.Println("Create SkeletonData with ID: " + strconv.Itoa(newSkeletonData.SID))
-
-	errEncode := json.NewEncoder(writer).Encode(newSkeletonData)
-	if errEncode != nil {
-		fmt.Println("error:", errEncode)
-	}
+	c.JSON(http.StatusCreated, newSkeletonData)
 }
 
-func GetSkeletonData(writer http.ResponseWriter, request *http.Request) {
-	skeletonDataID := getSidFromRequest(request)
-	writer.WriteHeader(http.StatusOK)
-
-	var newSkeletonData dto.SkeletonData
-	newSkeletonData.SID = skeletonDataID
-	newSkeletonData.Description = "SkeletonData with ID: " + strconv.Itoa(skeletonDataID)
-	log.Println("Get SkeletonData with ID: " + strconv.Itoa(skeletonDataID))
-
-	errEncode := json.NewEncoder(writer).Encode(newSkeletonData)
-	if errEncode != nil {
-		fmt.Println("error:", errEncode)
-	}
+func GetSkeletonData(c *gin.Context) {
+	var skeletonData dto.SkeletonData
+	skeletonData.SID = getSidFromRequest(c)
+	skeletonData.Description = "SkeletonData with ID: " + strconv.Itoa(skeletonData.SID)
+	log.Println("Get SkeletonData with ID: " + strconv.Itoa(skeletonData.SID))
+	c.JSON(http.StatusOK, skeletonData)
 }
 
-func UpdateSkeletonData(writer http.ResponseWriter, request *http.Request) {
-	skeletonDataID := getSidFromRequest(request)
+func UpdateSkeletonData(c *gin.Context) {
+
 	var updateSkeletonData dto.SkeletonData
 
-	reqBody, errReadAll := io.ReadAll(request.Body)
-	if errReadAll != nil {
-		fmt.Println("error:", errReadAll)
+	if err := c.ShouldBindJSON(&updateSkeletonData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-
-	errUnmarshal := json.Unmarshal(reqBody, &updateSkeletonData)
-	if errUnmarshal != nil {
-		fmt.Println("error:", errUnmarshal)
-	}
-
-	writer.WriteHeader(http.StatusOK)
 
 	var newSkeletonData dto.SkeletonData
-	newSkeletonData.SID = skeletonDataID
+	newSkeletonData.SID = getSidFromRequest(c)
 	newSkeletonData.Description = updateSkeletonData.Description
-	log.Println("Update SkeletonData with ID: " + strconv.Itoa(skeletonDataID))
-
-	errEncode := json.NewEncoder(writer).Encode(newSkeletonData)
-	if errEncode != nil {
-		fmt.Println("error:", errEncode)
-	}
+	log.Println("Update SkeletonData with ID: " + strconv.Itoa(newSkeletonData.SID))
+	c.JSON(http.StatusOK, newSkeletonData)
 }
 
-func DeleteSkeletonData(writer http.ResponseWriter, request *http.Request) {
-	skeletonDataID := getSidFromRequest(request)
-	writer.WriteHeader(http.StatusNoContent)
-
+func DeleteSkeletonData(c *gin.Context) {
+	skeletonDataID := getSidFromRequest(c)
 	log.Println("Delete SkeletonData with ID: " + strconv.Itoa(skeletonDataID))
+	c.Writer.WriteHeader(http.StatusNoContent)
 }
 
-func getSidFromRequest(req *http.Request) int {
-	vars := mux.Vars(req)
-	sid, _ := strconv.Atoi(vars["sid"])
+func getSidFromRequest(c *gin.Context) int {
+	id := c.Param("id")
+	sid, _ := strconv.Atoi(id)
 	return sid
 }
