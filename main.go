@@ -21,12 +21,12 @@ func main() {
 	log.Fatal(router.Run(":8180"))
 
 	// mux router
-	//muxrouter := mux.NewRouter().StrictSlash(true)
-	//muxrouter.HandleFunc("/api/v1/mux/ping", controller.Ping).Methods("GET")
-	//muxrouter.HandleFunc("/api/v1/mux/skeletonData", controller.CreateSkeletonData).Methods("POST")
-	//muxrouter.HandleFunc("/api/v1/mux/skeletonData/{sid:[0-9]+}", controller.GetSkeletonData).Methods("GET")
-	//muxrouter.HandleFunc("/api/v1/mux/skeletonData/{sid:[0-9]+}", controller.UpdateSkeletonData).Methods("PUT")
-	//muxrouter.HandleFunc("/api/v1/mux/skeletonData/{sid:[0-9]+}", controller.DeleteSkeletonData).Methods("DELETE")
+	//router := mux.NewRouter().StrictSlash(true)
+	//router.HandleFunc("/api/v1/ping", controller.Ping).Methods("GET")
+	//router.HandleFunc("/api/v1/skeletonData", controller.CreateSkeletonData).Methods("POST")
+	//router.HandleFunc("/api/v1/skeletonData/{sid:[0-9]+}", controller.GetSkeletonData).Methods("GET")
+	//router.HandleFunc("/api/v1/skeletonData/{sid:[0-9]+}", controller.UpdateSkeletonData).Methods("PUT")
+	//router.HandleFunc("/api/v1/skeletonData/{sid:[0-9]+}", controller.DeleteSkeletonData).Methods("DELETE")
 	//
-	//log.Fatal(http.ListenAndServe(":8280", muxrouter))
+	//log.Fatal(http.ListenAndServe(":8180", router))
 }
